@@ -1,61 +1,87 @@
 humanScore = 0;
 computerScore = 0;
+let resulttext = "";
 
 function getComputerChoice() {
   const x = Math.random();
-  if (x < 0.3) {
-    console.log("Computer: Rock");
+  if (x < 0.33) {
     return "Rock";
-  } else if (x < 0.6) {
-    console.log("Computer: Paper");
+  } else if (x < 0.66) {
     return "Paper";
   } else {
-    console.log("Computer: Scissors");
     return "Scissors";
   }
 }
 
-function getHumanChoice() {
-  let x = prompt("Please type 'Rock', 'Paper', or 'Scissors'");
-  console.log("Human: " + x);
-  return x.charAt(0).toUpperCase() + x.slice(1).toLowerCase(); // Ensures first letter is capitalized
-}
-
 function playRound(humanChoice, computerChoice) {
   if (humanChoice === computerChoice) {
-    console.log("Tie Game!!");
+    resulttext = "Tie Game!!";
   } else if (humanChoice === "Rock" && computerChoice === "Paper") {
-    console.log("You Lose! Paper beats Rock!");
+    resulttext = "You Lose! Paper beats Rock!";
     computerScore++;
   } else if (humanChoice === "Rock" && computerChoice === "Scissors") {
-    console.log("You Win! Rock beats Scissors!");
+    resulttext = "You Win! Rock beats Scissors!";
     humanScore++;
   } else if (humanChoice === "Paper" && computerChoice === "Rock") {
-    console.log("You Win! Paper beats Rock!");
+    resulttext = "You Win! Paper beats Rock!";
     humanScore++;
   } else if (humanChoice === "Paper" && computerChoice === "Scissors") {
-    console.log("You Lose! Scissors beats Paper!");
+    resulttext = "You Lose! Scissors beats Paper!";
     computerScore++;
   } else if (humanChoice === "Scissors" && computerChoice === "Rock") {
-    console.log("You Lose! Rock beats Scissors!");
+    resulttext = "You Lose! Rock beats Scissors!";
     computerScore++;
   } else if (humanChoice === "Scissors" && computerChoice === "Paper") {
-    console.log("You Win! Scissors beats Paper!");
+    resulttext = "You Win! Scissors beats Paper!";
     humanScore++;
   }
 }
 
-function PlayGame() {
-  let i = 1;
-  while (i <= 5) {
-    // Corrected the loop condition to run 5 times
-    const humanSelection = getHumanChoice();
-    const computerSelection = getComputerChoice();
-    playRound(humanSelection, computerSelection);
-    console.log("Human Score: " + humanScore);
-    console.log("Computer Score: " + computerScore);
-    i++;
-  }
-}
+// Ensure JavaScript Runs After the DOM is Loaded
+document.addEventListener("DOMContentLoaded", () => {
+  const buttons = document.querySelectorAll("button");
+  const resultContainer = document.querySelector("#result");
 
-PlayGame();
+  // Function to handle score display
+  const updateScores = () => {
+    const container = document.querySelector("#score");
+
+    // Clear existing scores before appending new ones
+    container.innerHTML = "";
+
+    const humanScoreElement = document.createElement("div");
+    humanScoreElement.classList.add("score");
+    humanScoreElement.style.fontSize = "50px";
+    if (humanScore > computerScore) {
+      humanScoreElement.style.color = "green";
+    }
+    humanScoreElement.textContent = "Human Score: " + humanScore;
+
+    const computerScoreElement = document.createElement("div");
+    computerScoreElement.classList.add("score");
+    computerScoreElement.style.fontSize = "50px";
+    if (computerScore > humanScore) {
+      computerScoreElement.style.color = "green";
+    }
+    computerScoreElement.textContent = "Computer Score: " + computerScore;
+
+    const result = document.createElement("div");
+    result.classList.add("result");
+    result.textContent = resulttext;
+
+    // Append the scores
+    container.appendChild(humanScoreElement);
+    container.appendChild(computerScoreElement);
+    resultContainer.innerHTML = "";
+    resultContainer.appendChild(result);
+  };
+  // Attach event listeners for each button
+  buttons.forEach((button) => {
+    button.addEventListener("click", () => {
+      playRound(button.id, getComputerChoice());
+      updateScores(); // Update score display after each round
+    });
+  });
+});
+
+// PlayGame();
